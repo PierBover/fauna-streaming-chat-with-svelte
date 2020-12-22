@@ -1,0 +1,30 @@
+html, body {
+    height: 100%;
+}
+
+body {
+    background-color: #f4f5f9;
+    margin: 0;
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+}
+
+input {
+    border: 1px solid rgb(63, 0, 165);
+    border-radius: .25rem;
+    padding: .5rem;
+    font-size: 1rem;
+}
+
+button {
+    border: none;
+    background-color: rgb(63, 0, 165);
+    color: white;
+    padding: .5rem 1rem;
+    border-radius: .25rem;
+    font-size: 1rem;
+}
