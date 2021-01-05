@@ -2,7 +2,7 @@ import faunadb from 'faunadb';
 import FaunaStream from "./FaunaStream.js";
 
 // We do this so that our FQL code is cleaner
-const {Paginate, Match, Filter, Lambda, Index, GT, Var, Create, Collection, Ref, Now, Do, Update} = faunadb.query;
+const {Paginate, Match, Range, Index, Create, Collection, Ref, Do, Update, ToMicros, Now, TimeSubtract} = faunadb.query;
 
 const client = new faunadb.Client({
 	secret: FAUNA_SECRET
@@ -15,19 +15,17 @@ export const chatRoomStream = new FaunaStream(client, chatRoomRef);
 export async function getLatestMessages (afterTs) {
 	const result = await client.query(
 		Paginate(
-			Filter(
+			Range(
 				Match(
-					Index('ChatMessages_by_chatRoomRef'),
-					chatRoomRef
+					Index("ChatMessages_by_chatRoomRef"),
+					Ref(Collection("ChatRooms"), "1")
 				),
-				Lambda(
-					['ref', 'authorName', 'authorColor', 'message', 'ts'],
-					GT(
-						Var('ts'),
-						afterTs
-					)
-				)
-			)
+				afterTs ? afterTs : ToMicros(TimeSubtract(Now(), 1, 'hour')),
+				[]
+			),
+			{
+				size: 10000
+			}
 		)
 	)
 	

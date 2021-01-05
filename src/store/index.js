@@ -8,24 +8,22 @@ export const messages = writable([]);
 export const authorName = names[Math.floor(Math.random() * names.length)];
 export const authorColor = colors[Math.floor(Math.random() * colors.length)];
 
-const nowMicroseconds = Date.now() * 1000;
-const fiveMinutesMicroseconds = 1000000 * 60 * 5;
-let lastUpdateTs = nowMicroseconds - fiveMinutesMicroseconds;
+let lastUpdateTs;
 
 async function updateMessages () {
 	const faunaResults = await getLatestMessages(lastUpdateTs);
 	
 	const latestMessages = faunaResults.map(item => ({
-		id: item[0].value.id,
+		ts: item[0],
 		authorName: item[1],
 		authorColor: item[2],
 		message: item[3],
-		ts: item[4]
+		id: item[4].value.id,
 	}));
 	
 	if (latestMessages.length) {
 		messages.update(array => [...array, ...latestMessages]);
-		lastUpdateTs = latestMessages[latestMessages.length - 1].ts;
+		lastUpdateTs = latestMessages[latestMessages.length - 1].ts + 1;
 	}
 }
 
