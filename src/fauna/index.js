@@ -39,11 +39,7 @@ export async function createMessage (authorName, authorColor, message) {
 		Do(
 			Update(
 				chatRoomRef,
-				{
-					data: {
-						lastUpdate: Now()
-					}
-				}
+				{}
 			),
 			Create(
 				Collection('ChatMessages'),
